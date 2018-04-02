@@ -49,7 +49,7 @@ if s:Enabled('g:python_highlight_builtin_objs')
   syn keyword pythonNone        None
   syn keyword pythonBoolean     True False
   syn keyword pythonBuiltinObj  Ellipsis NotImplemented
-  syntax match pythonBuiltinObj    '\v<%(object|bool|int|float|tuple|str|list|dict|set|frozenset|bytearray|bytes)>' containedin=pythonFuncCall
+  syntax match pythonBuiltinObj    '\v<%(object|bool|int|float|tuple|str|list|dict|set|frozenset|bytearray|bytes)>'
   syn keyword pythonBuiltinObj  __debug__ __doc__ __file__ __name__ __package__
   syn keyword pythonBuiltinObj  __loader__ __spec__ __path__ __cached__
 endif
@@ -87,24 +87,6 @@ if s:Enabled('g:python_highlight_exceptions')
 endif
 
 "
-" Noise
-"
-
-syntax match   pythonNoise              /:/
-syntax match   pythonNoise              /\./ skipwhite skipempty nextgroup=pythonObjectProp,pythonFuncCall
-
-"
-" Function calls
-"
-
-syntax match   pythonObjectProp         contained /\<\K\k*/
-syntax match   pythonFuncCall           /\<\K\k*\ze\s*(/ nextgroup=pythonFuncArgs contains=pythonBuiltinObj
-syntax region  pythonFuncArgs           contained matchgroup=pythonParens start=/(/ end=/)/       contains=pythonFuncArgCommas,pythonKeywordArgument,@pythonExpression,pythonComment skipwhite skipempty extend
-syntax match   pythonKeywordArgument    contained /\<\K\k*\ze\s*=/ nextgroup=pythonOperator skipwhite
-syntax match   pythonFuncArgCommas      contained ','
-
-
-"
 " Keywords
 "
 
@@ -131,15 +113,12 @@ syn match   pythonFunction    '\%([^[:cntrl:][:space:][:punct:][:digit:]]\|_\)\%
 syn match   pythonStatement   '\<async\s\+def\>' nextgroup=pythonFunction skipwhite
 syn match   pythonStatement   '\<async\s\+with\>'
 syn match   pythonStatement   '\<async\s\+for\>'
-syn cluster pythonExpression contains=pythonStatement,pythonRepeat,pythonConditional,pythonOperator,pythonNumber,pythonHexNumber,pythonOctNumber,pythonBinNumber,pythonFloat,pythonString,pythonBytes,pythonBoolean,pythonBuiltinObj,pythonBuiltinFunc,pythonFuncCall,pythonBracket,pythonBrace,pythonParen
+syn cluster pythonExpression contains=pythonStatement,pythonRepeat,pythonConditional,pythonOperator,pythonNumber,pythonHexNumber,pythonOctNumber,pythonBinNumber,pythonFloat,pythonString,pythonBytes,pythonBoolean,pythonBuiltinObj,pythonBuiltinFunc
 
 "
 " Code blocks
 "
 
-syntax region  pythonBracket        matchgroup=pythonBrackets     start=/\[/ end=/\]/ contains=@pythonExpression extend
-syntax region  pythonBrace          matchgroup=pythonBraces       start=/{/  end=/}/  contains=@pythonExpression,pythonDictColon,pythonDictComma extend
-syntax region  pythonParen          matchgroup=pythonParens       start=/(/  end=/)/  contains=@pythonExpression,pythonDictComma extend
 syntax match   pythonDictColon      contained /:/
 syntax match   pythonDictComma      contained /,/
 
@@ -319,28 +298,20 @@ if v:version >= 508 || !exists('did_python_syn_inits')
     command -nargs=+ HiLink hi def link <args>
   endif
 
-  HiLink pythonNoise            Comment
   HiLink pythonStatement        Statement
   HiLink pythonRaiseFromStatement   Statement
   HiLink pythonImport           Include
   HiLink pythonFunction         Function
-  HiLink pythonFuncCall         Function
   HiLink pythonKeywordArgument  Argument
   HiLink pythonConditional      Conditional
   HiLink pythonRepeat           Repeat
   HiLink pythonException        Exception
   HiLink pythonOperator         Operator
 
-  HiLink pythonFuncArgCommas    pythonNoise
-  HiLink pythonBrackets         Delimiter
-  HiLink pythonParens           Delimiter
-  HiLink pythonBraces           Delimiter
-  HiLink pythonDictColon        pythonNoise
-  HiLink pythonDictComma        pythonNoise
 
   HiLink pythonDecorator        Define
   HiLink pythonDottedName       Function
-  HiLink pythonDot              pythonNoise
+  HiLink pythonDot              Normal
 
   HiLink pythonComment          Comment
   if !s:Enabled('g:python_highlight_file_headers_as_comments')
