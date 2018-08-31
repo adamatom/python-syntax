@@ -39,6 +39,7 @@ if s:Enabled('g:python_highlight_all')
   call s:EnableByDefault('g:python_print_as_function')
   call s:EnableByDefault('g:python_highlight_class_vars')
   call s:EnableByDefault('g:python_highlight_operators')
+  call s:EnableByDefault('g:python_highlight_type_annotations')
 endif
 
 "
@@ -52,6 +53,25 @@ if s:Enabled('g:python_highlight_builtin_objs')
   syntax match pythonBuiltinType    '\v<%(object|bool|int|float|tuple|str|list|dict|set|frozenset|bytearray|bytes)>'
   syn keyword pythonBuiltinObj  __debug__ __doc__ __file__ __name__ __package__
   syn keyword pythonBuiltinObj  __loader__ __spec__ __path__ __cached__
+endif
+
+
+if s:Enabled('g:python_highlight_type_annotations')
+  " These are derived from the lists found in python typing.py
+  " Super-special typing primitives.
+  syntax match pythonBuiltinType    '\v<%(Any|Callable|ClassVar|Generic|Optional|Tuple|Type|TypeVar|Union)>'
+
+  " ABCs (from collections.abc).
+  syntax match pythonBuiltinType    '\v<%(AbstractSet|ByteString|Container|ContextManager|Hashable|ItemsView|Iterable|Iterator|KeysView|Mapping|MappingView|MutableMapping|MutableSequence|MutableSet|Sequence|Sized|ValuesView|Awaitable|AsyncIterator|AsyncIterable|Coroutine|Collection|AsyncGenerator|AsyncContextManager)>'
+
+  " Structural checks, a.k.a. protocols.
+  syntax match pythonBuiltinType    '\v<%(Reversible|SupportsAbs|SupportsBytes|SupportsComplex|SupportsFloat|SupportsInt|SupportsRound)>'
+
+  " Concrete collection types.
+  syntax match pythonBuiltinType    '\v<%(Counter|Deque|Dict|DefaultDict|List|Set|FrozenSet|NamedTuple|Generator)>'
+
+  " One-off things.
+  syntax match pythonBuiltinType    '\v<%(AnyStr|cast|get_type_hints|NewType|no_type_check|no_type_check_decorator|NoReturn|overload|Text|TYPE_CHECKING)>'
 endif
 
 "
